@@ -93,8 +93,6 @@ class ChatRoomJabberBot(JabberBot):
         self.message_queue = []
         self.thread_killed = False
 
-        self.cric_bot = CricInfo(self)
-
     def connect(self):
         if not self.conn:
             conn = xmpp.Client(self.jid.getDomain(), debug = [])
@@ -520,7 +518,7 @@ class ChatRoomJabberBot(JabberBot):
 
     @botcmd(name=',sc')
     def soundcloud_fetch(self, mess, args):
-        """Fetch the top-most result from Google for site:soundcloud.com"""
+        """Fetch the top-most result from Google for site: soundcloud.com"""
         user = self.get_sender_username(mess)
         if user in self.users:
             self.log.info('%s queried %s from Google.' % (user, args))
