@@ -380,6 +380,11 @@ class ChatRoomJabberBot(JabberBot):
         if user in self.users:
             try:
                 meme_id = args.split(' ')[0]
+                if meme_id == 'help':
+                    memes = meme.list_memes()
+                    help_msg = "usage: ,meme meme 'top text' 'button text' where meme is %s" % memes 
+                    return help_msg
+
                 parsed = args.split('\'')
                 (top, button) = (parsed[1], parsed[3])
                 meme_url = meme.create_meme(meme_id, top, button)
