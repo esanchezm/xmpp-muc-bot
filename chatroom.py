@@ -60,6 +60,8 @@ import urllib2, urllib
 import simplejson
 from subprocess import Popen, PIPE, call
 
+import meme
+
 try:
     from BeautifulSoup import BeautifulSoup
     import gdata.youtube.service
@@ -370,6 +372,27 @@ class ChatRoomJabberBot(JabberBot):
             self.message_queue.append('_%s changed topic to %s_' %(self.users[user], args))
             self.log.info( '%s changed topic.' % user)
             self.save_state()
+
+    @botcmd(name=',meme')
+    def meme( self, mess, args):
+        """Create a meme, for the lulz"""
+        user = self.get_sender_username(mess)
+        if user in self.users:
+            try:
+                meme_id = args.split(' ')[0]
+                if meme_id == 'help':
+                    memes = meme.list_memes()
+                    help_msg = "usage: ,meme meme 'top text' 'button text' where meme is %s" % memes 
+                    return help_msg
+
+                parsed = args.split('\'')
+                (top, button) = (parsed[1], parsed[3])
+                meme_url = meme.create_meme(meme_id, top, button)
+                self.message_queue.append('_%s created a meme %s _' %(self.users[user], meme_url))
+                self.log.info( '%s created a meme, for the lulz' % user)
+
+            except Exception:
+                self.log.info( '%s tried to create a meme, but failed' % user)
 
 
     @botcmd(name=',list')
