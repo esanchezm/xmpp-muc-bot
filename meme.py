@@ -12,6 +12,8 @@ memes = {
     'pedobear'     : { 'generatorID': 235,   'imageID' : 564288 },
     'trollface'    : { 'generatorID': 26298, 'imageID' : 1182094 },
     'yaoming'      : { 'generatorID': 1610,  'imageID' : 458071 },
+    'kid'          : { 'generatorID': 121,  'imageID' : 1031 },
+    'yodawg'       : { 'generatorID': 79,  'imageID' : 108785 },
     }
 
 GENURL = 'http://memegenerator.net/create/instance'
