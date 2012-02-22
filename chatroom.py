@@ -319,7 +319,8 @@ class ChatRoomJabberBot(JabberBot):
         cmd = command
         self.log.debug("*** cmd = %s" % cmd)
 
-        self.apply_operator(mess, args)
+        if self.apply_operator(mess, args):
+            return
 
         if self.commands.has_key(cmd) and cmd != 'help':
             try:
@@ -418,6 +419,8 @@ class ChatRoomJabberBot(JabberBot):
                     counter = func(counter)
                     self.words[match.group(1)] = counter
                     self.message_queue.append('_%s %s [%s now at %d]_' %(self.users[user], match.group(1), string, counter))
+                return True
+        return False
 
                    
     @botcmd(name=',topic')
