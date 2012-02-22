@@ -403,6 +403,7 @@ class ChatRoomJabberBot(JabberBot):
                    
     def apply_operator(self, mess, args):
         """w00ts"""
+        msg = '_%s: %s [%s now at %d]_'
         user = self.get_sender_username(mess)
         text = mess.getBody()
         for op in self.ops:
@@ -413,12 +414,12 @@ class ChatRoomJabberBot(JabberBot):
                     counter = self.words[match.group(1)]
                     counter = func(counter)
                     self.words[match.group(1)] = counter
-                    self.message_queue.append('_%s %s [%s now at %d]_' %(self.users[user], match.group(1), string, counter))
+                    self.message_queue.append(msg %(self.users[user], match.group(0), string, counter))
                 else:
                     counter = 0
                     counter = func(counter)
                     self.words[match.group(1)] = counter
-                    self.message_queue.append('_%s %s [%s now at %d]_' %(self.users[user], match.group(1), string, counter))
+                    self.message_queue.append(msg %(self.users[user], match.group(0), string, counter))
                 return True
         return False
 
