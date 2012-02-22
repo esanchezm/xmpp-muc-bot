@@ -67,6 +67,7 @@ try:
     import gdata.youtube.service
 except:
     print "Some features will not work, unless you have BeautifulSoup and gdata"
+    
 
 class ChatRoomJabberBot(JabberBot):
     """A bot based on JabberBot and broadcast example given in there."""
@@ -84,11 +85,18 @@ class ChatRoomJabberBot(JabberBot):
         # set level to INFO
         self.log.setLevel(logging.INFO)
 
+        self.ops = {
+            '++' : (re.compile(r'([a-zA-Z0-9]+)\+\+'), lambda x: x + 1, 'w00t!') ,
+            '--' : (re.compile(r'([a-zA-Z0-9]+)--'), lambda x: x - 1, 'ouch!'), 
+            }
+        
         self.users = self.get_users()
 
         self.invited = self.get_invited()
 
         self.ideas = self.get_ideas()
+
+        self.words = self.get_words()
 
         self.started = time.time()
 
@@ -141,6 +149,7 @@ class ChatRoomJabberBot(JabberBot):
         self.save_invited(f)
         self.save_topic(f)
         self.save_ideas(f)
+        self.save_words(f)
         f.close()
 
     def get_users(self):
@@ -166,6 +175,33 @@ class ChatRoomJabberBot(JabberBot):
             self.log.info("Saved user data")
         except:
             self.log.info("Couldn't save user data")
+
+
+    def get_words(self):
+        try:
+            from state import WORDS
+            words = WORDS
+            for word in words:
+                words[word] = int(words[word])
+            self.log.info("Obtained word")
+        except:
+            words = {}
+            self.log.info("No existing words")
+        return words
+
+    def save_words(self, file):
+        try:
+            file.write('WORDS = {\n')
+            for word in self.words:
+                file.write("'%s': '%d',\n"
+                           %(word.encode('utf-8'),
+                             int(self.words[word])))
+            file.write('}\n\n')
+            self.log.info("Saved words")
+        except:
+            self.log.info("Couldn't save words")
+
+
 
     def get_invited(self):
         try:
@@ -283,6 +319,8 @@ class ChatRoomJabberBot(JabberBot):
         cmd = command
         self.log.debug("*** cmd = %s" % cmd)
 
+        self.apply_operator(mess, args)
+
         if self.commands.has_key(cmd) and cmd != 'help':
             try:
                 reply = self.commands[cmd](mess, args)
@@ -361,8 +399,27 @@ class ChatRoomJabberBot(JabberBot):
                 return 'You are now known as %s' % args
             else:
                 return 'Nick already taken, or too short/long. 1-24 chars allowed.'
+                   
+    def apply_operator(self, mess, args):
+        """w00ts"""
+        user = self.get_sender_username(mess)
+        text = mess.getBody()
+        for op in self.ops:
+            (regex, func, string) = self.ops[op]
+            match = regex.match(text)
+            if match is not None:                
+                if match.group(1) in self.words:
+                    counter = self.words[match.group(1)]
+                    counter = func(counter)
+                    self.words[match.group(1)] = counter
+                    self.message_queue.append('_%s %s [%s now at %d]_' %(self.users[user], match.group(1), string, counter))
+                else:
+                    counter = 0
+                    counter = func(counter)
+                    self.words[match.group(1)] = counter
+                    self.message_queue.append('_%s %s [%s now at %d]_' %(self.users[user], match.group(1), string, counter))
 
-
+                   
     @botcmd(name=',topic')
     def topic( self, mess, args):
         """Change the topic/status"""
