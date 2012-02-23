@@ -92,7 +92,7 @@ class ChatRoomJabberBot(JabberBot):
 
         try:
             from state import MINILOGMAX
-            self.MINILOGMAX=int(MINILOGMAX)
+            self.MINILOGMAX = int(MINILOGMAX)
         except Exception, e:
             self.log.exception(e)
             self.MINILOGMAX=5
@@ -366,7 +366,7 @@ class ChatRoomJabberBot(JabberBot):
         try:
             mini_log = self.mini_log[username]
         except KeyError:
-            mini_log = collections.deque(maxlen=self.MINILOGMAX)
+            mini_log = collections.deque([],self.MINILOGMAX)
             self.mini_log[username] = mini_log
         mini_log.append(text)
         self.log.info("mini_log: %s" % (mini_log))
