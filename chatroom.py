@@ -366,7 +366,10 @@ class ChatRoomJabberBot(JabberBot):
         try:
             mini_log = self.mini_log[username]
         except KeyError:
-            mini_log = collections.deque([],self.MINILOGMAX)
+            try:
+                mini_log = collections.deque([],self.MINILOGMAX)
+            except TypeError:
+                mini_log = collections.deque()
             self.mini_log[username] = mini_log
         mini_log.append(text)
         self.log.info("mini_log: %s" % (mini_log))
