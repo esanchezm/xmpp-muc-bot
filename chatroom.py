@@ -92,8 +92,9 @@ class ChatRoomJabberBot(JabberBot):
 
         try:
             from state import MINILOGMAX
-            self.MINILOGMAX=MINILOGMAX
-        except:
+            self.MINILOGMAX=int(MINILOGMAX)
+        except Exception, e:
+            self.log.exception(e)
             self.MINILOGMAX=5
 
         self.sub_expression = re.compile(r"s/([a-zA-Z0-9-_\s]+)/([a-zA-Z0-9-_\s]+)/")
@@ -155,6 +156,7 @@ class ChatRoomJabberBot(JabberBot):
     def save_state(self):
         f = open('state.py', 'w')
         f.write('# -*- coding: utf-8 -*-\n\n')
+        f.write('MINILOGMAX = %d\n\n' % self.MINILOGMAX)
         self.save_users(f)
         self.save_invited(f)
         self.save_topic(f)
@@ -371,31 +373,26 @@ class ChatRoomJabberBot(JabberBot):
 
     def replace_text(self, username, mess):
         text = mess.getBody()
-        if self.sub_expression.match(text):
-            match = self.sub_expression.match(text).group(1)
-            replace = self.sub_expression.match(text).group(2)
-            try:
-            	mini_log = self.mini_log[username]
-            	for phrase in mini_log:
-            	    if match in phrase:
-            	        new_phrase = phrase.replace(match,replace)
-            	        self.message_queue.append('_%s meant %s_' %(self.users[username], new_phrase))
-                        self.mini_log[username].append(new_phrase)
-                        try:
-                            self.mini_log[username].remove(phrase)
-                        except ValueError:
-                            pass
-            	        return
-            except KeyError:
-                # no mini_log, we create it on the 1st phrase
-                pass
-            # nothing found, inform
-            reply = "No message found that matches that pattern."
-            self.send_simple_reply(mess,reply)
-            return True
-        else:
+        if not self.sub_expression.match(text):
             return False
 
+        match = self.sub_expression.match(text).group(1)
+        replace = self.sub_expression.match(text).group(2)
+        try:
+        	mini_log = self.mini_log[username]
+        	for phrase in mini_log:
+        	    if match in phrase:
+        	        new_phrase = phrase.replace(match,replace)
+        	        self.message_queue.append('_%s meant %s_' %(self.users[username], new_phrase))
+                        self.mini_log[username].append(new_phrase)
+                        return
+        except KeyError:
+            # no mini_log, we create it on the 1st phrase
+            pass
+        # nothing found, inform
+        reply = "No message found that matches that pattern."
+        self.send_simple_reply(mess,reply)
+        return True
 
     @botcmd(name=',restart')
     def restart(self, mess, args):
