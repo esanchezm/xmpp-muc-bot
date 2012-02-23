@@ -46,7 +46,7 @@
 from jabberbot import JabberBot, botcmd
 
 import xmpp
-
+import collections
 import threading
 import time
 import logging
@@ -89,6 +89,16 @@ class ChatRoomJabberBot(JabberBot):
             '++' : (re.compile(r'([a-zA-Z0-9]+)\+\+'), lambda x: x + 1, 'w00t!') ,
             '--' : (re.compile(r'([a-zA-Z0-9]+)--'), lambda x: x - 1, 'ouch!'), 
             }
+
+        try:
+            from state import MINILOGMAX
+            self.MINILOGMAX=MINILOGMAX
+        except:
+            self.MINILOGMAX=5
+
+        self.sub_expression = re.compile(r"s/([a-zA-Z0-9-_\s]+)/([a-zA-Z0-9-_\s]+)/")
+        # for s/// expresions
+        self.mini_log = {}
         
         self.users = self.get_users()
 
@@ -319,7 +329,11 @@ class ChatRoomJabberBot(JabberBot):
         cmd = command
         self.log.debug("*** cmd = %s" % cmd)
 
+        # parse operators, commands, etc and if not, dump the message to the chat
         if self.apply_operator(mess, args):
+            return
+
+        if self.replace_text(username, mess):
             return
 
         if self.commands.has_key(cmd) and cmd != 'help':
@@ -337,8 +351,51 @@ class ChatRoomJabberBot(JabberBot):
             reply = self.unknown_command( mess, cmd, args)
             if reply is None:
                 reply = default_reply
+
         if reply:
             self.send_simple_reply(mess,reply)
+
+        self.log_to_mini_log(username, text)
+
+
+    def log_to_mini_log(self, username, text):
+        # mini_log for s///
+        mini_log = None
+        try:
+            mini_log = self.mini_log[username]
+        except KeyError:
+            mini_log = collections.deque(maxlen=self.MINILOGMAX)
+            self.mini_log[username] = mini_log
+        mini_log.append(text)
+        self.log.info("mini_log: %s" % (mini_log))
+
+    def replace_text(self, username, mess):
+        text = mess.getBody()
+        if self.sub_expression.match(text):
+            match = self.sub_expression.match(text).group(1)
+            replace = self.sub_expression.match(text).group(2)
+            try:
+            	mini_log = self.mini_log[username]
+            	for phrase in mini_log:
+            	    if match in phrase:
+            	        new_phrase = phrase.replace(match,replace)
+            	        self.message_queue.append('_%s meant %s_' %(self.users[username], new_phrase))
+                        self.mini_log[username].append(new_phrase)
+                        try:
+                            self.mini_log[username].remove(phrase)
+                        except ValueError:
+                            pass
+            	        return
+            except KeyError:
+                # no mini_log, we create it on the 1st phrase
+                pass
+            # nothing found, inform
+            reply = "No message found that matches that pattern."
+            self.send_simple_reply(mess,reply)
+            return True
+        else:
+            return False
+
 
     @botcmd(name=',restart')
     def restart(self, mess, args):
