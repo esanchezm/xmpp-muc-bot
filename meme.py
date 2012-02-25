@@ -13,7 +13,8 @@ memes = {
     'trollface'    : { 'generatorID': 26298, 'imageID' : 1182094 },
     'yaoming'      : { 'generatorID': 1610,  'imageID' : 458071 },
     'kid'          : { 'generatorID': 121,   'imageID' : 1031 },
-    'yodawg'       : { 'generatorID': 79,    'imageID' : 108785 }
+    'yodawg'       : { 'generatorID': 79,    'imageID' : 108785 },
+    'awyeah'       : { 'generatorID': 211112,'imageID' : 1778013 }
     }
 
 GENURL = 'http://memegenerator.net/create/instance'
