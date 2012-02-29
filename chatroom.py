@@ -61,6 +61,7 @@ import simplejson
 from subprocess import Popen, PIPE, call
 
 import meme
+import poll
 
 try:
     from BeautifulSoup import BeautifulSoup
@@ -732,6 +733,130 @@ class ChatRoomJabberBot(JabberBot):
                      " *%s* " %nick, msg)
 
         return msg
+
+    @botcmd(name=',polls')
+    def cmd_polls(self, mess, args):
+        '"/polls" List all the finished polls'
+        polls = poll.PollFactory.get_polls()
+        if len(polls) == 0:            
+            return "There are no polls. You can create one using ,poll question"
+        polls_str = ""
+        user = self.get_sender_username(mess)
+        for iter_poll in polls:
+            polls_str += _("\n* Poll: #%d (%s): %s").para(iter_poll.id, user, iter_poll.question)
+        return polls_str
+
+    @botcmd(name=',pollresults')
+    def cmd_pollresults(self, mess, args):
+        '"/pollresults" Get the results of a given poll. Syntax: /pollresults poll_id '
+
+        msg = mess.getBody()
+        if msg.strip().lower() == "":
+            return 'It works like /poll poll_id'
+
+        try:
+            poll_ = poll.PollFactory.get_poll(msg.strip())
+        except poll.PollException, e:
+            reply = traceback.format_exc(e)
+            self.log.error(e)
+            return reply
+    
+        votes = poll_.get_votes()
+        if len(votes):
+            total = 0
+            yes = 0
+            no = 0
+            for vote in votes:
+                yes += vote.vote
+                user = self.users[vote.voter]
+                reply = '%s voted %s%s\n' % (user, str(vote), vote.msg if vote.msg else "")
+                self.send_simple_reply(mess,reply)
+    
+            total = len(votes)
+            no = abs(total - yes)
+            reply = 'Total votes: %d\nYes: %d\nNo: %d' % (total, yes, no)
+            self.send_simple_reply(mess,reply)
+        else:
+            reply = 'There were no votes'
+            self.send_simple_reply(mess,reply)
+
+    @botcmd(name=',poll')
+    def cmd_poll(self, mess, args):
+        '"/poll" Init a poll. Syntax: /poll question'
+        who = self.get_sender_username(mess)
+        msg = mess.getBody()
+        if msg.strip().lower() == "":
+            return 'It works like ,poll question'
+        
+        active_poll = poll.PollFactory.get_active_poll()
+        if active_poll is not None:            
+            user = self.users[active_poll.author]
+            return "There is a running poll:\nAuthor: %s\nQuestion: %s\nAuthor must close it using ,endpoll before starting another" % (user, active_poll.question)
+        currentpoll = poll.Poll()
+        try:
+            currentpoll.new(msg, who)
+        except poll.PollException, e:
+            reply = traceback.format_exc(e)
+            self.log.exception(reply)
+            return reply
+    
+        self.message_queue.append('%s has a question for you:\n----\n%s\n----\nPlease vote using /vote <0|1> [reason]' % (who, msg))
+    
+    @botcmd(name=',endpoll')
+    def cmd_endpoll(self, mess, args):
+        '"/endpoll" Finish a poll.'
+        
+        active_poll = poll.PollFactory.get_active_poll()
+        who = self.get_sender_username(mess)
+        if active_poll is None:
+            return "There is no running poll."
+        
+        if active_poll.author != who:
+            return "The running poll is not yours. Author: %s\nAsk him to close the vote using /endpoll" % poll.author
+    
+        self.message_queue.append('%s has closed the poll: "%s"\nResults:' % (self.users[who], active_poll.question))
+        votes = active_poll.get_votes()
+        if len(votes):
+            total = 0
+            for vote in votes:
+                total += vote.vote
+                self.message_queue.append('%s voted %s%s\n' % (self.users[voter.voter], str(vote), vote.msg if vote.msg else ""))
+    
+            self.message_queue.append('Total votes: %d\nYes: %d\nNo: %d' % (len(votes), total, len(votes) - total))
+        else:
+            self.message_queue.append('There were no votes')
+        active_poll.close()
+
+    @botcmd(name=',vote')    
+    def cmd_vote(self, mess, args):
+        '"/vote" Init a poll. Syntax: /vote <0|1> [reason]'
+        who = self.get_sender_username(mess)
+        msg = mess.getBody()
+        if msg.strip().lower() == "":
+            return 'It works like /vote <0|1> [reason]'
+    
+        active_poll = poll.PollFactory.get_active_poll()
+        if active_poll is None:
+            return "There is no running poll."
+    
+        try:
+            vote = int(msg.split(" ")[0])
+            if vote not in [0, 1]:
+                raise ValueError('Invalid vote')
+        except ValueError:
+            return "You can only vote 0 or 1 %s"
+    
+        comment = ' '.join(msg.split(' ')[1:])
+        try:
+            active_poll.vote(self.users[who], vote, comment or None)
+        except poll.PollException, e:
+            reply = traceback.format_exc(e)
+            self.log.exception(reply)
+            return reply
+    
+        reply = 'Your vote has been registered. Wait for poll ending to show final results'
+        self.send_simple_reply(mess,reply)
+        self.message_queue.append('%s has voted' % who)
 
     def chunk_message(self, user, msg):
         LIM_LEN = 512
