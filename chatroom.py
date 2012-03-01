@@ -815,7 +815,7 @@ class ChatRoomJabberBot(JabberBot):
             total = 0
             for vote in votes:
                 total += vote.vote
-                self.message_queue.append('%s voted %s%s\n' % (self.users[voter.voter], str(vote), vote.msg if vote.msg else ""))
+                self.message_queue.append('%s voted %s%s\n' % (self.users[vote.voter], str(vote), vote.msg if vote.msg else ""))
     
             self.message_queue.append('Total votes: %d\nYes: %d\nNo: %d' % (len(votes), total, len(votes) - total))
         else:
