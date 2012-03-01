@@ -829,22 +829,22 @@ class ChatRoomJabberBot(JabberBot):
 
     @botcmd(name=',vote')    
     def cmd_vote(self, mess, args):
-        '"/vote" Init a poll. Syntax: /vote <0|1> [reason]'
+        '",vote" Init a poll. Syntax: ,vote <0|1> [reason]'
         who = self.get_sender_username(mess)
         msg = mess.getBody()
         if msg.strip().lower() == "":
-            return 'It works like /vote <0|1> [reason]'
+            return 'It works like ,vote <0|1> [reason]'
     
         active_poll = poll.PollFactory.get_active_poll()
         if active_poll is None:
             return "There is no running poll."
     
         try:
-            vote = int(msg.split(" ")[0])
+            vote = int(msg.split(" ")[1])
             if vote not in [0, 1]:
                 raise ValueError('Invalid vote')
         except ValueError:
-            return "You can only vote 0 or 1 %s"
+            return "You can only vote 0 or 1 and you voted: %s" % msg
     
         comment = ' '.join(msg.split(' ')[1:])
         try:
