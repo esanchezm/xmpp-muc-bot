@@ -746,41 +746,41 @@ class ChatRoomJabberBot(JabberBot):
         '"/pollresults" Get the results of a given poll. Syntax: /pollresults poll_id '
 
         msg = mess.getBody()
-        if msg.strip().lower() == "":
+        if len(msg.split(' ')) == 1:
             return 'It works like /poll poll_id'
 
         try:
-            poll_ = poll.PollFactory.get_poll(msg.strip())
+            poll_id = msg.split(' ')[1]
+            poll_ = poll.PollFactory.get_poll(poll_id)
         except poll.PollException, e:
-            reply = traceback.format_exc(e)
-            self.log.error(e)
+            reply = e.message
+            self.log.exception(reply)
             return reply
-    
+
         votes = poll_.get_votes()
+        self.print_votes(votes)
+        
+    def print_votes(self, votes):
         if len(votes):
-            total = 0
             yes = 0
             no = 0
+            total = len(votes)
             for vote in votes:
                 yes += vote.vote
                 user = self.users[vote.voter]
-                reply = '%s voted %s%s\n' % (user, str(vote), vote.msg if vote.msg else "")
-                self.send_simple_reply(mess,reply)
+                self.message_queue.append('%s voted %s %s\n' % (user, str(vote), vote.msg if vote.msg else ""))
     
-            total = len(votes)
             no = abs(total - yes)
-            reply = 'Total votes: %d\nYes: %d\nNo: %d' % (total, yes, no)
-            self.send_simple_reply(mess,reply)
+            self.message_queue.append('Total votes: %d\nYes: %d\nNo: %d' % (total, yes, no))
         else:
-            reply = 'There were no votes'
-            self.send_simple_reply(mess,reply)
+            self.message_queue.append('There were no votes')
 
     @botcmd(name=',poll')
     def cmd_poll(self, mess, args):
         '"/poll" Init a poll. Syntax: /poll question'
         who = self.get_sender_username(mess)
         msg = mess.getBody()
-        if msg.strip().lower() == "":
+        if len(msg.split(' ')) == 1:
             return 'It works like ,poll question'
         
         active_poll = poll.PollFactory.get_active_poll()
@@ -789,9 +789,10 @@ class ChatRoomJabberBot(JabberBot):
             return "There is a running poll:\nAuthor: %s\nQuestion: %s\nAuthor must close it using ,endpoll before starting another" % (user, active_poll.question)
         currentpoll = poll.Poll()
         try:
-            currentpoll.new(msg, who)
+            polltxt = ' '.join(msg.split(' ')[1:])
+            currentpoll.new(polltxt, who)
         except poll.PollException, e:
-            reply = traceback.format_exc(e)
+            reply = e.message
             self.log.exception(reply)
             return reply
     
@@ -811,15 +812,7 @@ class ChatRoomJabberBot(JabberBot):
     
         self.message_queue.append('%s has closed the poll: "%s"\nResults:' % (self.users[who], active_poll.question))
         votes = active_poll.get_votes()
-        if len(votes):
-            total = 0
-            for vote in votes:
-                total += vote.vote
-                self.message_queue.append('%s voted %s%s\n' % (self.users[vote.voter], str(vote), vote.msg if vote.msg else ""))
-    
-            self.message_queue.append('Total votes: %d\nYes: %d\nNo: %d' % (len(votes), total, len(votes) - total))
-        else:
-            self.message_queue.append('There were no votes')
+        self.print_votes(votes)
         active_poll.close()
 
     @botcmd(name=',vote')    
@@ -827,6 +820,7 @@ class ChatRoomJabberBot(JabberBot):
         '",vote" Init a poll. Syntax: ,vote <0|1> [reason]'
         who = self.get_sender_username(mess)
         msg = mess.getBody()
+        comment = None
         if msg.strip().lower() == "":
             return 'It works like ,vote <0|1> [reason]'
     
@@ -835,17 +829,21 @@ class ChatRoomJabberBot(JabberBot):
             return "There is no running poll."
     
         try:
-            vote = int(msg.split(" ")[1])
+            response = msg.split(" ")[1]
+            vote = int(response)
             if vote not in [0, 1]:
                 raise ValueError('Invalid vote')
         except ValueError:
-            return "You can only vote 0 or 1 and you voted: %s" % msg
+            return "You can only vote 0 or 1 and you voted: %s" % response
     
-        comment = ' '.join(msg.split(' ')[1:])
         try:
-            active_poll.vote(self.users[who], vote, comment or None)
+            comment = " ".join(msg.split(' ')[2:])
+        except IndexError:
+            pass #comment = None
+        try:
+            active_poll.vote(who, vote, comment)
         except poll.PollException, e:
-            reply = traceback.format_exc(e)
+            reply = e.message
             self.log.exception(reply)
             return reply
     
