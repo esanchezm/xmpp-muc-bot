@@ -738,7 +738,7 @@ class ChatRoomJabberBot(JabberBot):
         polls_str = ""
         user = self.get_sender_username(mess)
         for iter_poll in polls:
-            polls_str += _("\n* Poll: #%d (%s): %s").para(iter_poll.id, user, iter_poll.question)
+            polls_str += "\n* Poll: #%d (%s): %s" % (iter_poll.id, user, iter_poll.question)
         return polls_str
 
     @botcmd(name=',pollresults')
