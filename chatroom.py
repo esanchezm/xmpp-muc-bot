@@ -100,18 +100,13 @@ class ChatRoomJabberBot(JabberBot):
 
         self.sub_expression = re.compile(r"s/([a-zA-Z0-9-_\s]+)/([a-zA-Z0-9-_\s]+)/")
         # for s/// expresions
-        self.mini_log = {}
-        
+        self.mini_log = {}        
         self.users = self.get_users()
-
         self.invited = self.get_invited()
-
         self.ideas = self.get_ideas()
-
         self.words = self.get_words()
-
+        poll.init_database()
         self.started = time.time()
-
         self.message_queue = []
         self.thread_killed = False
 
@@ -739,7 +734,7 @@ class ChatRoomJabberBot(JabberBot):
         '"/polls" List all the finished polls'
         polls = poll.PollFactory.get_polls()
         if len(polls) == 0:            
-            return "There are no polls. You can create one using ,poll question"
+            return "There are no finished polls. You can create one using ,poll question"
         polls_str = ""
         user = self.get_sender_username(mess)
         for iter_poll in polls:
