@@ -7,13 +7,18 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+def init_database():
+        db = sqlite3.connect("polls.db")
+        db.cursor().execute("CREATE TABLE IF NOT EXISTS polls (id INTEGER PRIMARY KEY, question TEXT, status INT DEFAULT 1, author TEXT, UNIQUE(question))")
+        db.cursor().execute("CREATE TABLE IF NOT EXISTS votes ( id INTEGER PRIMARY KEY, voter TEXT DEFAULT NULL, vote INTEGER, msg TEXT DEFAULT NULL, poll_id INTEGER, FOREIGN KEY(poll_id) REFERENCES polls(id), UNIQUE(voter, poll_id))")
+        db.close()
+
 class PollFactory:
     @staticmethod
     def get_db():
         """Get a db connection. Caller MUST close it"""
         pollsdb = sqlite3.connect("polls.db")
         pollsdb.row_factory = dict_factory
-        pollsdb.cursor().execute("CREATE TABLE IF NOT EXISTS polls (id INTEGER PRIMARY KEY, question TEXT, status INT DEFAULT 1, author TEXT, UNIQUE(question))")
         return pollsdb
 
     @staticmethod
@@ -82,7 +87,10 @@ class BaseTable(object):
     def __init_attrs(self, attrs):
         for field in self.__dict__.iteritems():
             if field[1] is None:
-                self.__dict__[field[0]] = attrs[field[0]]
+                try:
+                    self.__dict__[field[0]] = attrs[field[0]]
+                except TypeError:
+                    pass
 
 class Poll(BaseTable):
 
@@ -132,7 +140,8 @@ class Poll(BaseTable):
 
     def get_votes(self):
         """Get all the votes on a poll"""
-        c = self.pollsdb.cursor()
+        c = VoteFactory.get_db().cursor()
+
         c.execute("SELECT id FROM votes WHERE poll_id = ?", (str(self.id)))
         rows = c.fetchall()
         votes = []
@@ -187,11 +196,11 @@ class Vote(BaseTable):
         self.__create_vote(attrs)
    
     def __create_vote(self, attrs):
-        c = self.pollsdb.cursor()
+        c = self.pollsdb.cursor()        
         try:
             c.execute("INSERT INTO votes (voter, vote, msg, poll_id) VALUES(?, ?, ?, ?)",\
                       (attrs["voter"], attrs["vote"], attrs["msg"], attrs["poll_id"]))
-        except sqlite3.IntegrityError:
+        except sqlite3.IntegrityError, e:
             self.pollsdb.rollback()
             c.close()
             raise PollException('Duplicated vote')
