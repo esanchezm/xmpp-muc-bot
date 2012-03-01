@@ -13,6 +13,7 @@ class PollFactory:
         """Get a db connection. Caller MUST close it"""
         pollsdb = sqlite3.connect("polls.db")
         pollsdb.row_factory = dict_factory
+        pollsdb.cursor().execute("CREATE TABLE IF NOT EXISTS polls (id INTEGER PRIMARY KEY, question TEXT, status INT DEFAULT 1, author TEXT, UNIQUE(question))")
         return pollsdb
 
     @staticmethod
@@ -147,6 +148,7 @@ class VoteFactory:
         """Get a db connection. Caller MUST close it"""
         pollsdb = sqlite3.connect("polls.db")
         pollsdb.row_factory = dict_factory
+        pollsdb.cursor().execute("CREATE TABLE IF NOT EXISTS votes ( id INTEGER PRIMARY KEY, voter TEXT DEFAULT NULL, vote INTEGER, msg TEXT DEFAULT NULL, poll_id INTEGER, FOREIGN KEY(poll_id) REFERENCES polls(id), UNIQUE(voter, poll_id))")
         return pollsdb
 
     @staticmethod
