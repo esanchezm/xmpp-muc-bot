@@ -8,4 +8,7 @@ handy_links = {
     'megusta'    : 'http://i.imgur.com/ibzJX.jpg',
     'yaoming'    : 'http://i.imgur.com/AwWvY.png',
     'trollface'  : 'http://i.imgur.com/Njy8l.png',
+    'sfuck'      : 'http://i.imgur.com/sXtZc.jpg',
+    'goback'     : 'http://i.imgur.com/pLQUU.gif',
+    'dealwithit' : 'http://i.imgur.com/G7f9J.gif'
 }
