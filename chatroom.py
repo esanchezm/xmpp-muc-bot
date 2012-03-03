@@ -62,6 +62,7 @@ from subprocess import Popen, PIPE, call
 
 import meme
 import poll
+import handy
 
 try:
     from BeautifulSoup import BeautifulSoup
@@ -486,6 +487,18 @@ class ChatRoomJabberBot(JabberBot):
             self.message_queue.append('_%s changed topic to %s_' %(self.users[user], args))
             self.log.info( '%s changed topic.' % user)
             self.save_state()
+
+    @botcmd(name=',handy')
+    def handy( self, mess, args):
+        handy_link = args.split(' ')[0]
+        if handy_link == 'help':
+            keys = handy.handy_links.keys()
+            return "usage: ,handy link where link is %s" % keys
+        else:
+            try:
+                self.message_queue.append(handy.handy_links[handy_link])
+            except:
+                return 'could not find link'
 
     @botcmd(name=',meme')
     def meme( self, mess, args):
