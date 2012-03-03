@@ -22,5 +22,6 @@ handy_links = {
     'wrong'      : 'http://i.imgur.com/TBL3j.gif',
     'coolstory'  : 'http://i.imgur.com/iVLKt.gif',
     'f7u12'      : 'http://i.imgur.com/U8jcB.gif',
-    'facepalm'   : 'http://i.imgur.com/6eKQz.gif'
+    'facepalm'   : 'http://i.imgur.com/6eKQz.gif',
+    'party'      : 'http://i.imgur.com/yq9A0.gif'
 }
