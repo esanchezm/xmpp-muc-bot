@@ -491,7 +491,7 @@ class ChatRoomJabberBot(JabberBot):
     @botcmd(name=',handy')
     def handy( self, mess, args):
         handy_link = args.split(' ')[0]
-        if handy_link == 'help':
+        if handy_link in ('help', '', None):
             keys = handy.handy_links.keys()
             return "usage: ,handy link where link is %s" % keys
         else:
