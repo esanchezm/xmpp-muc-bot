@@ -385,7 +385,7 @@ class ChatRoomJabberBot(JabberBot):
         	        new_phrase = phrase.replace(match,replace)
         	        self.message_queue.append('_%s meant %s_' %(self.users[username], new_phrase))
                         self.mini_log[username].append(new_phrase)
-                        return
+                        return True
         except KeyError:
             # no mini_log, we create it on the 1st phrase
             pass
