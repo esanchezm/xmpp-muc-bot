@@ -24,5 +24,9 @@ handy_links = {
     'coolstory'  : 'http://i.imgur.com/iVLKt.gif',
     'f7u12'      : 'http://i.imgur.com/U8jcB.gif',
     'facepalm'   : 'http://i.imgur.com/6eKQz.gif',
-    'party'      : 'http://i.imgur.com/yq9A0.gif'
+    'party'      : 'http://i.imgur.com/yq9A0.gif',
+    'rickroll'   : 'http://i.imgur.com/UR1x2.gif',
+    'punch'      : 'http://i.imgur.com/dEhlI.gif',
+    'orly'       : 'http://i.imgur.com/HX9Tt.gif',
+    'wtf'        : 'http://i.imgur.com/ZlC7s.gif'
 }
