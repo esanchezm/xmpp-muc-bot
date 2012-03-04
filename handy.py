@@ -28,5 +28,6 @@ handy_links = {
     'rickroll'   : 'http://i.imgur.com/UR1x2.gif',
     'punch'      : 'http://i.imgur.com/dEhlI.gif',
     'orly'       : 'http://i.imgur.com/HX9Tt.gif',
-    'wtf'        : 'http://i.imgur.com/ZlC7s.gif'
+    'wtf'        : 'http://i.imgur.com/ZlC7s.gif',
+    'onoudidnt'  : 'http://i.imgur.com/1mUDX.gif'
 }
