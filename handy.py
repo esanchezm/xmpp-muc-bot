@@ -29,5 +29,6 @@ handy_links = {
     'punch'      : 'http://i.imgur.com/dEhlI.gif',
     'orly'       : 'http://i.imgur.com/HX9Tt.gif',
     'wtf'        : 'http://i.imgur.com/ZlC7s.gif',
-    'onoudidnt'  : 'http://i.imgur.com/1mUDX.gif'
+    'onoudidnt'  : 'http://i.imgur.com/1mUDX.gif',
+    'challenge'  : 'http://i.imgur.com/02HJ9.png'
 }
