@@ -37,7 +37,7 @@ def create_meme(meme, t0, t1):
         return 'Error %s' % e
     s = str(pq)
     # <img src="http://d.images.memegenerator.net/instances/400x/xxxxxx.jpg
-    regex = re.compile("http://\w.images.memegenerator.net/instances/400x/\d+.jpg")
+    regex = re.compile("http://[\w\.]+.memegenerator.net/instances/400x/\d+.jpg")
     match = regex.search(s)
     if match is None:
         return 'Error'
