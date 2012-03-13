@@ -14,7 +14,8 @@ memes = {
     'yaoming'      : { 'generatorID': 1610,  'imageID' : 458071 },
     'kid'          : { 'generatorID': 121,   'imageID' : 1031 },
     'yodawg'       : { 'generatorID': 79,    'imageID' : 108785 },
-    'awyeah'       : { 'generatorID': 211112,'imageID' : 1778013 }
+    'awyeah'       : { 'generatorID': 211112,'imageID' : 1778013 },
+    'chicken'      : { 'generatorID': 747,   'imageID' : 473733 }
     }
 
 GENURL = 'http://memegenerator.net/create/instance'
@@ -27,7 +28,7 @@ def create_meme(meme, t0, t1):
 
     if not meme in memes:
         return 'Not Found'
-    
+        
     data = dict(data.items() + memes[meme].items())
     
     try:
@@ -57,4 +58,5 @@ if __name__ == '__main__':
     if len(sys.argv) != 4:
         print('Usage meme text0 text1')
         sys.exit(1)
+    print "creating: %s %s %s" % (sys.argv[1], sys.argv[2], sys.argv[3])
     print create_meme(sys.argv[1], sys.argv[2], sys.argv[3])
