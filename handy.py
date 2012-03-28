@@ -31,5 +31,6 @@ handy_links = {
     'wtf'        : 'http://i.imgur.com/ZlC7s.gif',
     'onoudidnt'  : 'http://i.imgur.com/1mUDX.gif',
     'challenge'  : 'http://i.imgur.com/02HJ9.png',
-    'shark'      : 'http://i.imgur.com/7fsza.png'
+    'shark'      : 'http://i.imgur.com/7fsza.png',
+    'trap'       : 'http://i.imgur.com/NcCIw.jpg'
 }
