@@ -508,7 +508,7 @@ class ChatRoomJabberBot(JabberBot):
         if user in self.users:
             try:
                 meme_id = args.split(' ')[0]
-                if meme_id == 'help':
+                if meme_id in ('help', '', None):
                     memes = meme.list_memes()
                     help_msg = "usage: ,meme meme 'top text' 'button text' where meme is %s" % memes 
                     return help_msg
