@@ -490,13 +490,14 @@ class ChatRoomJabberBot(JabberBot):
 
     @botcmd(name=',handy')
     def handy( self, mess, args):
+        user = self.get_sender_username(mess)
         handy_link = args.split(' ')[0]
         if handy_link in ('help', '', None):
             keys = handy.handy_links.keys()
             return "usage: ,handy link where link is %s" % keys
         else:
             try:
-                self.message_queue.append(handy.handy_links[handy_link])
+                self.message_queue.append('_%s shares %s _' % (self.users[user], handy.handy_links[handy_link]))
             except:
                 return 'could not find link'
 
