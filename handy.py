@@ -32,5 +32,8 @@ handy_links = {
     'onoudidnt'  : 'http://i.imgur.com/1mUDX.gif',
     'challenge'  : 'http://i.imgur.com/02HJ9.png',
     'shark'      : 'http://i.imgur.com/7fsza.png',
-    'trap'       : 'http://i.imgur.com/NcCIw.jpg'
+    'trap'       : 'http://i.imgur.com/NcCIw.jpg',
+    'notsure'    : 'http://i.imgur.com/WH4mO.gif',
+    'rolfmao'    : 'http://i.imgur.com/VlOTd.gif',
+    'orly'       : 'http://i.imgur.com/wdlmj.gif'
 }
