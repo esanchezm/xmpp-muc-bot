@@ -32,5 +32,10 @@ handy_links = {
     'onoudidnt'  : 'http://i.imgur.com/1mUDX.gif',
     'challenge'  : 'http://i.imgur.com/02HJ9.png',
     'shark'      : 'http://i.imgur.com/7fsza.png',
-    'trap'       : 'http://i.imgur.com/NcCIw.jpg'
+    'trap'       : 'http://i.imgur.com/NcCIw.jpg',
+    'cry'        : 'http://i.imgur.com/SlOFG.gif',
+    'disapprove' : 'http://i.imgur.com/3QAmc.gif',
+    'tldr'       : 'http://i.imgur.com/mOH78.gif',
+    'disgonbgud' : 'http://i.imgur.com/sbk60.gif',
+    'rushitting' : 'http://i.imgur.com/8MwwZ.gif'
 }
