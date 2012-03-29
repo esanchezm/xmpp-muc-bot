@@ -35,7 +35,7 @@ handy_links = {
     'trap'       : 'http://i.imgur.com/NcCIw.jpg',
     'notsure'    : 'http://i.imgur.com/WH4mO.gif',
     'rolfmao'    : 'http://i.imgur.com/VlOTd.gif',
-    'orly'       : 'http://i.imgur.com/wdlmj.gif'
+    'orly'       : 'http://i.imgur.com/wdlmj.gif',
     'cry'        : 'http://i.imgur.com/SlOFG.gif',
     'disapprove' : 'http://i.imgur.com/3QAmc.gif',
     'tldr'       : 'http://i.imgur.com/mOH78.gif',
