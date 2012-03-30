@@ -40,5 +40,6 @@ handy_links = {
     'disapprove' : 'http://i.imgur.com/3QAmc.gif',
     'tldr'       : 'http://i.imgur.com/mOH78.gif',
     'disgonbgud' : 'http://i.imgur.com/sbk60.gif',
-    'rushitting' : 'http://i.imgur.com/8MwwZ.gif'
+    'rushitting' : 'http://i.imgur.com/8MwwZ.gif',
+    'iseewhat'   : 'http://i.imgur.com/IEUCH.jpg'
 }
