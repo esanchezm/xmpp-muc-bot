@@ -20,6 +20,7 @@ handy_links = {
     'rolleyes'   : 'http://i.imgur.com/RqtZe.gif',
     'fuckthis'   : 'http://i.imgur.com/Bsfnw.gif',
     'fuckevery'  : 'http://i.imgur.com/yScef.jpg',
+    'fuckdapol'  : 'http://i.imgur.com/6UpBV.png',
     'lol'        : 'http://i.imgur.com/LFguu.gif',
     'wrong'      : 'http://i.imgur.com/TBL3j.gif',
     'coolstory'  : 'http://i.imgur.com/iVLKt.gif',
