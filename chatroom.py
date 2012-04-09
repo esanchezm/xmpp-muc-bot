@@ -500,9 +500,9 @@ class ChatRoomJabberBot(JabberBot):
             try:
                 meme_url = handy.handy_links[handy_link]
                 try:
-                    if commands[1] in ('nyanit'):
+                    if commands[1] in ('nyanit',):
                         meme_url = meme_url.replace('http://', meme.nyanurl)
-                except  IndexError:
+                except IndexError:
                     pass # no nyanit
                 self.message_queue.append('_%s shares %s _' % (self.users[user], meme_url))
             except KeyError, IndexError:
@@ -525,9 +525,9 @@ class ChatRoomJabberBot(JabberBot):
                 (top, button) = (parsed[1], parsed[3])
                 meme_url = meme.create_meme(meme_id, top, button)
                 try:
-                    if commands[1] in ('nyanit'):
+                    if commands[1] in ('nyanit',):
                         meme_url = meme_url.replace('http://', meme.nyanurl)
-                except  IndexError:
+                except IndexError:
                     pass # no nyanit
                 self.message_queue.append('_%s created a meme %s _' %(self.users[user], meme_url))
                 self.log.info( '%s created a meme, for the lulz' % user)
