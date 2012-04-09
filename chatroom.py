@@ -514,6 +514,7 @@ class ChatRoomJabberBot(JabberBot):
         user = self.get_sender_username(mess)
         if user in self.users:
             try:
+                # FIXME: Parse this better
                 commands = args.split(' ')
                 meme_id = commands[0]
                 if meme_id in ('help', '', None):
@@ -525,7 +526,7 @@ class ChatRoomJabberBot(JabberBot):
                 (top, button) = (parsed[1], parsed[3])
                 meme_url = meme.create_meme(meme_id, top, button)
                 try:
-                    if commands[1] in ('nyanit',):
+                    if commands[3] in ('nyanit',):
                         meme_url = meme_url.replace('http://', meme.nyanurl)
                 except IndexError, e:
                     pass # no nyanit
