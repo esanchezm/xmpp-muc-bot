@@ -2,8 +2,6 @@
 import sys, re
 from pyquery import PyQuery
 
-nyanurl = 'http://nyanit.com/'
-
 memes = {
     'fry'          : { 'generatorID': 305,   'imageID' : 84688 },
     'raptor'       : { 'generatorID': 17,    'imageID' : 984 },

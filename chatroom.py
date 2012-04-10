@@ -491,21 +491,14 @@ class ChatRoomJabberBot(JabberBot):
     @botcmd(name=',handy')
     def handy( self, mess, args):
         user = self.get_sender_username(mess)
-        commands = args.split(' ')
-        handy_link = commands[0]
+        handy_link = args.split(' ')[0]
         if handy_link in ('help', '', None):
             keys = handy.handy_links.keys()
-            return "usage: ,handy link [nyanit] where link is %s. nyanit is an optional param to create more lulz" % keys
+            return "usage: ,handy link where link is %s" % keys
         else:
             try:
-                meme_url = handy.handy_links[handy_link]
-                try:
-                    if commands[1] in ('nyanit',):
-                        meme_url = meme_url.replace('http://', meme.nyanurl)
-                except IndexError, e:
-                    pass # no nyanit
-                self.message_queue.append('_%s shares %s _' % (self.users[user], meme_url))
-            except KeyError, IndexError:
+                self.message_queue.append('_%s shares %s _' % (self.users[user], handy.handy_links[handy_link]))
+            except:
                 return 'could not find link'
 
     @botcmd(name=',meme')
@@ -514,22 +507,15 @@ class ChatRoomJabberBot(JabberBot):
         user = self.get_sender_username(mess)
         if user in self.users:
             try:
-                # FIXME: Parse this better
-                commands = args.split(' ')
-                meme_id = commands[0]
+                meme_id = args.split(' ')[0]
                 if meme_id in ('help', '', None):
                     memes = meme.list_memes()
-                    help_msg = "usage: ,meme meme 'top text' 'button text' [nyanit] where meme is %s. nyanit is an optional param to create more lulz" % memes 
+                    help_msg = "usage: ,meme meme 'top text' 'button text' where meme is %s" % memes 
                     return help_msg
 
                 parsed = args.split('\'')
                 (top, button) = (parsed[1], parsed[3])
                 meme_url = meme.create_meme(meme_id, top, button)
-                try:
-                    if commands[3] in ('nyanit',):
-                        meme_url = meme_url.replace('http://', meme.nyanurl)
-                except IndexError, e:
-                    pass # no nyanit
                 self.message_queue.append('_%s created a meme %s _' %(self.users[user], meme_url))
                 self.log.info( '%s created a meme, for the lulz' % user)
 
